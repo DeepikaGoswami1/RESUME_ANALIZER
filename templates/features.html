@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Features - 3D AI Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --bg: #07070a;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.08);
+    --accent: #00f0ff;
+    --accent2: #ff003c;
+    --accent3: #7000ff;
+    --text-main: #ffffff;
+    --text-muted: #a0a0b0;
+  }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Animated Orbs Background */
+  .bg-orbs {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1; overflow: hidden;
+    background: radial-gradient(circle at 50% 50%, #0c0b1a 0%, #000 100%);
+  }
+  .orb {
+    position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+    animation: floatOrb 20s infinite alternate ease-in-out;
+  }
+  .orb-1 { width: 400px; height: 400px; background: var(--accent); top: -50px; left: -100px; }
+  .orb-2 { width: 500px; height: 500px; background: var(--accent3); bottom: -100px; right: 5%; animation-delay: -5s; }
+
+  @keyframes floatOrb {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(100px, 150px) scale(1.2); }
+  }
+
+  /* Grid overlay for cyberpunk feel */
+  .bg-grid {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: -1;
+    transform: perspective(500px) rotateX(60deg) translateY(-100px) scale(3);
+    animation: gridMove 20s linear infinite;
+    opacity: 0.2;
+    transform-origin: top;
+  }
+  @keyframes gridMove {
+    0% { transform: perspective(500px) rotateX(60deg) translateY(0) scale(3); }
+    100% { transform: perspective(500px) rotateX(60deg) translateY(50px) scale(3); }
+  }
+
+  /* Navigation */
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 2rem 4rem; position: relative; z-index: 10; }
+  .logo { font-size: 24px; font-weight: 900; text-decoration: none; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 20px var(--accent3); }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 15px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+  .nav-links a:hover { color: var(--accent); text-shadow: 0 0 15px var(--accent); }
+  .btn-nav-cta { background: linear-gradient(45deg, var(--accent3), var(--accent)); padding: 10px 24px !important; border-radius: 30px; color: white !important; box-shadow: 0 10px 30px rgba(0, 240, 255, 0.3); border: 1px solid rgba(255,255,255,0.2); }
+  .btn-nav-cta:hover { box-shadow: 0 15px 40px rgba(0, 240, 255, 0.6); transform: translateY(-2px); }
+
+  /* Header */
+  header { text-align: center; padding: 4rem 2rem 2rem; position: relative; z-index: 5; }
+  header h1 { font-size: 56px; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(to right, #fff, var(--text-muted)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  header h1 span { background: linear-gradient(45deg, var(--accent), var(--accent3)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(112, 0, 255, 0.4); }
+  header p { font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+  /* Grid Layout for Features */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 4rem auto 6rem;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 5;
+  }
+
+  .feature-card {
+    background: rgba(20, 20, 30, 0.5);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 30px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+    transform-style: preserve-3d;
+    transition: transform 0.3s;
+  }
+
+  .feature-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    transform: translateZ(40px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  }
+  .feature-icon-wrapper svg { width: 32px; height: 32px; fill: var(--accent); }
+
+  .feature-card h3 { font-size: 22px; margin-bottom: 1rem; color: #fff; transform: translateZ(30px); }
+  .feature-card p { font-size: 15px; color: var(--text-muted); line-height: 1.7; transform: translateZ(20px); }
+  
+  .feature-card:nth-child(2) .feature-icon-wrapper svg { fill: var(--accent2); }
+  .feature-card:nth-child(3) .feature-icon-wrapper svg { fill: var(--accent3); }
+  .feature-card:nth-child(4) .feature-icon-wrapper svg { fill: #22c55e; }
+
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+</div>
+<div class="bg-grid"></div>
+
+<nav>
+  <a href="/" class="logo">RESUME<span>.AI</span></a>
+  <ul class="nav-links">
+    <li><a href="/features" style="color:var(--accent); text-shadow: 0 0 10px var(--accent);">Features</a></li>
+    <li><a href="/how_it_works">How it works</a></li>
+    <li><a href="/resume" class="btn-nav-cta">Analyze Now</a></li>
+  </ul>
+</nav>
+
+<header>
+  <h1>Powerful <span>Features</span></h1>
+  <p>Our AI-powered analyzing tool is designed to give you the most accurate and actionable insights from your resume.</p>
+</header>
+
+<div class="features-grid">
+  <!-- Feature 1 -->
+  <div class="feature-card" data-tilt data-tilt-glare data-tilt-max-glare="0.2" data-tilt-scale="1.05">
+    <div class="feature-icon-wrapper">
+      <svg viewBox="0 0 24 24"><path d="M9.5 14.25l-5.584 2.908 1.067-6.217L.5 6.767l6.245-.907L9.5 0l2.755 5.86 6.245.907-4.483 4.174 1.067 6.217z"/></svg>
+    </div>
+    <h3>Skill Extraction</h3>
+    <p>Automatically identifies technical and soft skills from your résumé text. We cross-reference over thousands of industry-standard skills to accurately represent your abilities.</p>
+  </div>
+
+  <!-- Feature 2 -->
+  <div class="feature-card" data-tilt data-tilt-glare data-tilt-max-glare="0.2" data-tilt-scale="1.05">
+    <div class="feature-icon-wrapper">
+      <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    </div>
+    <h3>Role Matching</h3>
+    <p>Matches your profile against distinct job categories. Using TF-IDF Vectorization and Support Vector Machines (SVM), we accurately classify which role best suits your background.</p>
+  </div>
+
+  <!-- Feature 3 -->
+  <div class="feature-card" data-tilt data-tilt-glare data-tilt-max-glare="0.2" data-tilt-scale="1.05">
+    <div class="feature-icon-wrapper">
+      <svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    </div>
+    <h3>Phone Extractor</h3>
+    <p>Our intelligent Regex parser efficiently scans through your document to securely extract primary contact numbers for automated hiring workflows.</p>
+  </div>
+
+  <!-- Feature 4 -->
+  <div class="feature-card" data-tilt data-tilt-glare data-tilt-max-glare="0.2" data-tilt-scale="1.05">
+    <div class="feature-icon-wrapper">
+      <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    </div>
+    <h3>Email Extraction</h3>
+    <p>Easily isolates email addresses from your uploaded resume formatting so recruiters can quickly gather your contact details in their systems.</p>
+  </div>
+</div>
+
+</body>
+</html>

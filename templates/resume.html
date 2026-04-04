@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analyze Resume - 3D AI Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --bg: #07070a;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.08);
+    --accent: #00f0ff;
+    --accent2: #ff003c;
+    --accent3: #7000ff;
+    --text-main: #ffffff;
+    --text-muted: #a0a0b0;
+  }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Animated Orbs Background */
+  .bg-orbs {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1; overflow: hidden;
+    background: radial-gradient(circle at 50% 50%, #0c0b1a 0%, #000 100%);
+  }
+  .orb {
+    position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+    animation: floatOrb 20s infinite alternate ease-in-out;
+  }
+  .orb-1 { width: 500px; height: 500px; background: var(--accent); top: 10%; right: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: var(--accent3); bottom: -100px; left: 5%; animation-delay: -5s; }
+
+  @keyframes floatOrb {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-100px, 150px) scale(1.2); }
+  }
+
+  /* Grid overlay for cyberpunk feel */
+  .bg-grid {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: -1;
+    transform: perspective(500px) rotateX(60deg) translateY(-100px) scale(3);
+    animation: gridMove 20s linear infinite;
+    opacity: 0.2;
+    transform-origin: top;
+  }
+  @keyframes gridMove {
+    0% { transform: perspective(500px) rotateX(60deg) translateY(0) scale(3); }
+    100% { transform: perspective(500px) rotateX(60deg) translateY(50px) scale(3); }
+  }
+
+  /* Navigation */
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 2rem 4rem; position: relative; z-index: 10; }
+  .logo { font-size: 24px; font-weight: 900; text-decoration: none; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 20px var(--accent3); }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 15px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+  .nav-links a:hover { color: var(--accent); text-shadow: 0 0 15px var(--accent); }
+  .btn-nav-cta { background: linear-gradient(45deg, var(--accent3), var(--accent)); padding: 10px 24px !important; border-radius: 30px; color: white !important; box-shadow: 0 10px 30px rgba(0, 240, 255, 0.3); border: 1px solid rgba(255,255,255,0.2); }
+  .btn-nav-cta:hover { box-shadow: 0 15px 40px rgba(0, 240, 255, 0.6); transform: translateY(-2px); }
+
+  /* 3D Container Layout */
+  .container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 5;
+    text-align: center;
+  }
+
+  .container h1 { font-size: 48px; font-weight: 900; margin-bottom: 2rem; background: linear-gradient(to right, #fff, var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+  /* Upload Box */
+  .upload-card {
+    background: rgba(20, 20, 30, 0.5);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 3rem;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
+    transform-style: preserve-3d;
+    cursor: pointer;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .upload-card::before {
+    content: ''; position: absolute; inset: 0;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 24px; pointer-events: none;
+    margin: 10px;
+  }
+  .upload-card:hover::before { border-color: var(--accent); }
+
+  .upload-content {
+    transform: translateZ(40px);
+  }
+
+  .upload-content p {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  /* Submit Button */
+  .btn-submit {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 50px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: transparent;
+    transition: 0.3s;
+    transform-style: preserve-3d;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 3rem;
+  }
+  .btn-submit::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(45deg, var(--accent3), var(--accent));
+    border-radius: 12px; transform: translateZ(-10px);
+    transition: 0.3s; filter: blur(10px); opacity: 0.7;
+  }
+  .btn-submit::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(45deg, var(--accent3), var(--accent));
+    border-radius: 12px; border: 1px solid rgba(255,255,255,0.4); z-index: -1;
+  }
+  .btn-submit:hover { transform: translateY(-5px) scale(1.05); }
+  .btn-submit:hover::before { filter: blur(20px); opacity: 1; }
+
+  /* Result Card */
+  .result-card {
+    background: rgba(10, 10, 20, 0.7);
+    backdrop-filter: blur(25px);
+    border-radius: 24px;
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    padding: 3rem;
+    box-shadow: 0 0 50px rgba(0, 240, 255, 0.15), inset 0 0 30px rgba(0, 240, 255, 0.05);
+    margin-top: 2rem;
+    text-align: left;
+    transform-style: preserve-3d;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    transform: translateZ(30px);
+  }
+
+  .data-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  }
+
+  .data-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  
+  .data-val {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .skills-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 2rem 0 1rem;
+    color: var(--accent3);
+    text-shadow: 0 0 10px rgba(112, 0, 255, 0.5);
+    transform: translateZ(30px);
+  }
+
+  .skills-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    transform: translateZ(40px);
+  }
+  .skill-pip {
+    padding: 10px 20px;
+    background: linear-gradient(45deg, rgba(112, 0, 255, 0.2), rgba(0, 240, 255, 0.1));
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 30px;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+
+  /* Particle class */
+  .spark {
+    position: fixed; width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%;
+    animation: burst 1s forwards; z-index: 9999;
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  @keyframes burst {
+    0% { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+</div>
+<div class="bg-grid"></div>
+
+<nav>
+  <a href="/" class="logo">RESUME<span>.AI</span></a>
+  <ul class="nav-links">
+    <li><a href="/features">Features</a></li>
+    <li><a href="/how_it_works">How it works</a></li>
+    <li><a href="/" class="btn-nav-cta">Go Home</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+  <h1>Launch your Analysis</h1>
+
+  <!-- Form -->
+  <form action="/pred" method="post" enctype="multipart/form-data" onsubmit="triggerSparks(event)">
+    <div class="upload-card" data-tilt data-tilt-glare data-tilt-max-glare="0.2" data-tilt-scale="1.02" onclick="document.getElementById('resumeInput').click()">
+      <div class="upload-content">
+        <svg style="width:60px; height:60px; fill:var(--accent); margin-bottom:1rem;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8 17h8v1H8v-1zm0-3h8v1H8v-1zm0-3h5v1H8v-1z"/></svg>
+        <p id="fileText">Click here to Select PDF / TXT</p>
+      </div>
+    </div>
+    
+    <input type="file" id="resumeInput" name="resume" hidden onchange="updateFileName()">
+    
+    <button type="submit" class="btn-submit">Analyze Resume</button>
+  </form>
+
+  {% if message %}
+  <div style="color:var(--accent2); margin-top:20px; font-weight:700; background:rgba(255,0,0,0.1); padding:15px; border-radius:10px; border:1px solid var(--accent2);">
+    {{ message }}
+  </div>
+  {% endif %}
+
+  <!-- Results View -->
+  {% if predicted_category %}
+  <div class="result-card" data-tilt data-tilt-max="5" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.1">
+    <div class="info-grid">
+      <div class="data-box">
+        <div class="data-label">Category Match</div>
+        <div class="data-val">{{ predicted_category }}</div>
+      </div>
+      <div class="data-box" style="border-color:rgba(112,0,255,0.4);">
+        <div class="data-label" style="color:var(--accent3);">Recommended Role</div>
+        <div class="data-val">{{ recomended_job }}</div>
+      </div>
+      <div class="data-box">
+        <div class="data-label">Email Address</div>
+        <div class="data-val" style="font-size:16px;">{{ email }}</div>
+      </div>
+      <div class="data-box">
+        <div class="data-label">Phone Number</div>
+        <div class="data-val">{{ phone }}</div>
+      </div>
+    </div>
+
+    <div class="skills-title">AI Extracted Skills</div>
+    <div class="skills-wrapper">
+      {% for skill in extracted_skills %}
+      <div class="skill-pip">{{ skill }}</div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+function updateFileName(){
+  let input = document.getElementById("resumeInput");
+  let text = document.getElementById("fileText");
+  if(input.files.length > 0){
+    text.innerHTML = "<span style='color:var(--accent);'>✔ File Ready:</span> " + input.files[0].name;
+  }
+}
+
+function triggerSparks(e){
+  // Generate sparks originating from the center
+  let cx = window.innerWidth / 2;
+  let cy = window.innerHeight / 2;
+  
+  for(let i=0; i<40; i++){
+    let s = document.createElement("div");
+    s.className = "spark";
+    
+    s.style.left = cx + "px";
+    s.style.top = cy + "px";
+    
+    // random target direction
+    s.style.setProperty('--dx', (Math.random() * 400 - 200) + 'px');
+    s.style.setProperty('--dy', (Math.random() * 400 - 200) + 'px');
+    
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1000);
+  }
+}
+</script>
+
+</body>
+</html>
