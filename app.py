@@ -6,11 +6,11 @@ import os
 
 app = Flask(__name__)
 
-# ------------------- DEBUG (optional) -------------------
+# ------------------- DEBUG -------------------
 print("Current Directory:", os.getcwd())
 print("Model Path Exists:", os.path.exists("models/svm_classifier.pkl"))
 
-# ------------------- LOAD MODELS (SAFE) -------------------
+# ------------------- LOAD MODELS -------------------
 try:
     model = pickle.load(open('models/svm_classifier.pkl', 'rb'))
     tfidf = pickle.load(open('models/tfidf_vectorizer.pkl', 'rb'))
@@ -19,6 +19,10 @@ try:
     print("Models Loaded Successfully ✅")
 except Exception as e:
     print("Model loading error ❌:", e)
+    model = None
+    tfidf = None
+    svm_classifier = None
+    tfidf_vectorizer = None
 
 # ------------------- FUNCTIONS -------------------
 
@@ -98,6 +102,11 @@ def resume():
 
 @app.route('/pred', methods=['POST'])
 def pred():
+
+    # 🔥 Model safety check
+    if model is None or tfidf is None:
+        return render_template("resume.html", message="Model not loaded properly")
+
     if 'resume' not in request.files:
         return render_template("resume.html", message="No file selected")
 
@@ -127,7 +136,7 @@ def pred():
     return render_template(
         "resume.html",
         predicted_category=predicted_category,
-        recomended_job=recommended_job,
+        recommended_job=recommended_job,  # ✅ FIXED
         phone=phone,
         email=email,
         extracted_skills=extracted_skills
@@ -136,4 +145,4 @@ def pred():
 # ------------------- RUN -------------------
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
