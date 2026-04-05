@@ -59,7 +59,7 @@ resume-analyzer/
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/Deepika/resume-analyzer.git
+git clone https://github.com/DeepikaGoswami1/RESUME_ANALIZER.git
 cd resume-analyzer
 ```
 
