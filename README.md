@@ -59,7 +59,7 @@ resume-analyzer/
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/your-username/resume-analyzer.git
+git clone https://github.com/Deepika/resume-analyzer.git
 cd resume-analyzer
 ```
 
@@ -92,7 +92,7 @@ http://127.0.0.1:5000/
 
 ## 🌐 Live Demo
 
-👉 https://your-app-name.onrender.com
+👉 https://resume-analizer-s5kc.onrender.com
 
 ---
 
