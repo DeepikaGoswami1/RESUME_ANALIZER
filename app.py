@@ -68,7 +68,7 @@ def extract_email(text):
 def extract_skills(text, skills_list):
     skills = []
     for skill in skills_list:
-        pattern = r"\b{}\b".format(re.escape(skill))
+        pattern = r"(?<![a-zA-Z0-9]){}(?![a-zA-Z0-9])".format(re.escape(skill))
         if re.search(pattern, text, re.IGNORECASE):
             skills.append(skill)
     return skills
@@ -124,12 +124,21 @@ def pred():
     else:
         return render_template("resume.html", message="Invalid file format")
 
+    if not text.strip():
+        return render_template("resume.html", message="Warning: Could not extract any text from this file. It might be an image-based PDF or empty.")
+
     try:
         predicted_category = predict_category(text)
         recommended_job = job_recommendation(text)
         phone = extract_phone_number(text)
         email = extract_email(text)
         extracted_skills = extract_skills(text, skills_list)
+        
+        print("\n" + "="*50)
+        print("DEBUG - Extracted Raw Text Preview:")
+        print(text[:500])
+        print("\nDEBUG - Found Skills:", extracted_skills)
+        print("="*50 + "\n")
     except Exception as e:
         return render_template("resume.html", message=f"Error: {str(e)}")
 
@@ -145,4 +154,4 @@ def pred():
 # ------------------- RUN -------------------
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
